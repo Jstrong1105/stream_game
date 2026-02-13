@@ -14,23 +14,41 @@ public final class InputHandler
 	
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	
-	// 사용자에게 문자를 입력받는 메소드
-	public static String readString(String prompt)
+	// 버퍼 닫기
+	// 프로그램이 종료 될때 실행되어야 한다.
+	// 한번 실행되면 다시 입력 받지 못한다.
+	public static void close()
 	{
 		try
 		{
-			System.out.print(prompt);
-			return br.readLine();
-		}
+			br.close();
+		} 
 		catch (IOException e)
 		{
 			throw new RuntimeException("입력 에러");
 		}
 	}
 	
+	// 사용자에게 문자를 입력받는 메소드
+	// 공백은 제외하고 받아온다.
+	public static String readString(String prompt)
+	{
+		try
+		{
+			System.out.print(prompt);
+			return br.readLine().trim();
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException("입출력 스트림 에러");
+		}
+	}
+	
 	// 사용자에게 숫자를 입력받는 메소드
 	public static int readInt(String prompt)
 	{
+		int limit = 10;
+		
 		while(true)
 		{
 			try
@@ -39,7 +57,13 @@ public final class InputHandler
 			}
 			catch (NumberFormatException e)
 			{
+				limit--;
 				System.out.println("숫자만 입력하세요.");
+				
+				if(limit <= 0)
+				{
+					throw new RuntimeException("숫자를 입력하지 않아 종료됩니다.");
+				}
 			}
 		}
 	}
@@ -69,11 +93,11 @@ public final class InputHandler
 		{
 			String answer = readString(prompt);
 			
-			if(answer.equals(y))
+			if(answer.equalsIgnoreCase(y))
 			{
 				return true;
 			}
-			else if(answer.equals(n))
+			else if(answer.equalsIgnoreCase(n))
 			{
 				return false;
 			}
