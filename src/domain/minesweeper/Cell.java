@@ -32,16 +32,25 @@ class Cell
 	boolean isMine() { return mine; }
 	int getAdjacentMines() { return adjacentMines; }
 	boolean isHidden() { return status == CellStatus.HIDDEN; }
+	boolean isOpen() { return status == CellStatus.OPEN; }
 	
 	// 세터
 	void setMine(boolean mine){this.mine = mine;}
-	void setAdjacentMines(int mines)
+	
+	void addAdjacentMine()
 	{
-		if(mines < MIN_ADJACENTMINES || mines > MAX_ADJACENTMINES )
+		if(adjacentMines < MAX_ADJACENTMINES)
 		{
-			throw new IllegalArgumentException("잘못된 지뢰 개수 입니다.");
+			adjacentMines++;
 		}
-		adjacentMines = mines;
+	}
+	
+	void minusAdjacentMine()
+	{
+		if(adjacentMines > MIN_ADJACENTMINES)
+		{
+			adjacentMines--;
+		}
 	}
 	
 	// 깃발 와리가리
@@ -67,7 +76,7 @@ class Cell
 	}
 	
 	// 지뢰 열기
-	void openBoom()
+	void openMine()
 	{
 		if(mine)
 		{

@@ -8,6 +8,7 @@ public final class GameSleeper
 	// 외부에서 객체를 생성하지 못하도록 생성자를 private 으로 
 	private GameSleeper() {}
 	
+	// 남은 시간을 표시하는 메소드
 	public static void gameSleep(int second)
 	{
 		try
@@ -19,6 +20,22 @@ public final class GameSleeper
 		
 			System.out.printf("\r%2d 초 남았습니다.",0);
 			Thread.sleep(500);
+		}
+		
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	// 남은 시간을 표시하지 않고 멈추는 메소드
+	public static void gameStop(int second)
+	{
+		try
+		{	for(int i = second; i > 0; i--)
+			{
+			 	Thread.sleep(1000);
+			}
 		}
 		
 		catch (InterruptedException e)

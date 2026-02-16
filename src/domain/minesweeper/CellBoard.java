@@ -1,5 +1,6 @@
 package domain.minesweeper;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -60,7 +61,7 @@ class CellBoard
 		Collections.shuffle(list);
 		
 		list.stream()
-		.limit(mineCount)
+		.limit(MINE_COUNT)
 		.forEach(r->
 				{
 					board[r/SIZE][r%SIZE].setMine(true);
@@ -91,13 +92,17 @@ class CellBoard
 		// 위의 방식은 일정한 속도를 보장해 준다고 할 수 있지만 
 		// 아래 방식은 걸리는 속도를 일정하게 보장해 주진 않는다. 
 		// 다만 거의 무조건 위의 방식보다 빠르다.
-		if(SIZE*SIZE/2 >= mineCount)
+		if(SIZE*SIZE/2 >= MINE_COUNT)
 		{
 			RD
 			.ints(0,SIZE*SIZE)
 			.distinct()
-			.limit(mineCount)
-			.forEach(r->{board[r/SIZE][r%SIZE].setMine(true);});
+			.limit(MINE_COUNT)
+			.forEach(r->
+			{
+				board[r/SIZE][r%SIZE].setMine(true);
+				adjacentMine(r/SIZE, r%SIZE, true);
+			});
 		}
 		else
 		{
@@ -105,20 +110,51 @@ class CellBoard
 			// board를 2차원 스트림으로 바꾸기
 			// 2차원 스트림을 1차원 스트림으로 바꾸기 펼치는 느낌으로
 			// 1차원 스트림을 각각의 셀에 setMine(true) 실행하기
-			// 다시 2차원 스트림으로 바꾸기
-			// 다시 2차원 셀로 바꾸기 
-			
+			 Arrays.stream(board)
+			.flatMap(Arrays::stream)
+			.forEach(c->c.setMine(true));
+			 
 			// 그 다음에 SIZE*SIZE - mineCount 만큼 지뢰가 아닌 셀로 만들어야 한다.
 			RD
 			.ints(0,SIZE*SIZE)
 			.distinct()
-			.limit(SIZE*SIZE-mineCount)
+			.limit(SIZE*SIZE-MINE_COUNT)
 			.forEach(r->{board[r/SIZE][r%SIZE].setMine(false);});
+			
+			IntStream.range(0, SIZE*SIZE)
+			.filter(c->board[c/SIZE][c%SIZE].isMine())
+			.forEach(c->
+			{
+				adjacentMine(c/SIZE, c%SIZE,true);
+			});
 		}
-		
-		// 지뢰 칸 근처 8칸의 인접 지뢰 수를 +1 하는 로직
-		// stream 활용
 	}	
+	
+	// 지뢰 주변 셀의 adjacentMine의 개수를 증감시키는 메소드
+	private void adjacentMine(int row,int col,boolean add)
+	{
+		// 보드판의 범위 안에 있다면
+		if(!isOutOfArray(row, col))
+		{
+			for(int i = 0; i < 8; i++)
+			{
+				int nRow = row + DIRECTIONS_ROW[i];
+				int nCol = col + DIRECTIONS_COL[i];
+				
+				if(!isOutOfArray(nRow,nCol))
+				{
+					if(add)
+					{
+						board[nRow][nCol].addAdjacentMine();
+					}
+					else
+					{
+						board[nRow][nCol].minusAdjacentMine();
+					}
+				}
+			}
+		}
+	}
 	
 	// 출력하는 메소드
 	void boardPrint()
@@ -135,6 +171,17 @@ class CellBoard
 			// 해당 칸은 지뢰가 아닌 칸이여야 겠지?
 			// 이 후 사용자가 처음 입력한 칸 주변 8칸의 인접 지뢰 개수를 -1 시키고
 			// 새롭게 지뢰를 설정한 좌표 주변 8칸의 인접 지뢰 개수를 +1 해야한다.
+			RD.ints(0,SIZE*SIZE)
+			.filter(c->!board[c/SIZE][c%SIZE].isMine())
+			.limit(1)
+			.forEach(c->
+			{
+				board[row][col].setMine(false);
+				adjacentMine(row, col, false);
+				
+				board[c/SIZE][c%SIZE].setMine(true);
+				adjacentMine(c/SIZE, c%SIZE, true);
+			});
 		}
 		
 		// 지뢰가 아니라면 아무것도 할 필요가 없다.
@@ -207,14 +254,18 @@ class CellBoard
 	// 지뢰가 아닌 칸을 모두 열었는 지 확인하는 메소드
 	boolean isClear()
 	{
-		// Stream 활용
-		return false;
+		return
+		Arrays.stream(board)
+		.flatMap(Arrays::stream)
+		.noneMatch(c->!c.isMine()&&!c.isOpen());
 	}
 	
 	// 지뢰가 아닌 칸을 모두 열었거나 지뢰를 오픈했다면 모든 지뢰를 오픈하는 메소드
-	// 내부적으로 boardPrint(board) 를 다시 호출해줘야한다.
-	void openBoom()
+	void openMine()
 	{
-		// Stream 활용
+		Arrays.stream(board)
+		.flatMap(Arrays::stream)
+		.filter(c->c.isMine())
+		.forEach(c->c.openMine());
 	}
 }

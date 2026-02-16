@@ -31,8 +31,8 @@ public class GameResult
 	// 아래 방식 -> GameResult result = GameResult.win(100);
 	public static GameResult win(int clearTime) { return new GameResult(ResultType.WIN,clearTime); }
 	public static GameResult lose() {return new GameResult(ResultType.LOSE);};
-	public static GameResult Draw() {return new GameResult(ResultType.DRAW);};
-	public static GameResult Fold() {return new GameResult(ResultType.FOLD);};
+	public static GameResult draw() {return new GameResult(ResultType.DRAW);};
+	public static GameResult fold() {return new GameResult(ResultType.FOLD);};
 	
 	// getter
 	public int getClearTime() { return clearTime; }

@@ -3,6 +3,7 @@ package engine;
 import java.util.function.Supplier;
 
 import domain.base.GameApp;
+import domain.minesweeper.MinesweeperGetter;
 
 /*
  * 게임을 만드는 장소
@@ -11,7 +12,7 @@ import domain.base.GameApp;
  */
 public enum GameFactory
 {
-	
+	MINESWEEPER("지뢰찾기","지뢰가 아닌 칸을 모두 여세요!",MinesweeperGetter::getLauncher,MinesweeperGetter::setOption)
 	;
 	
 	GameFactory(String name, String explain, Supplier<GameApp> maker, Runnable setter)
@@ -29,7 +30,7 @@ public enum GameFactory
 	
 	public String getName() { return name; }
 	public String getExplain() { return explain; }
-	public GameApp getLancher()
+	public GameApp getLauncher()
 	{
 		return maker.get();
 	}
