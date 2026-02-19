@@ -8,6 +8,8 @@ import util.InputHandler;
  */
 public abstract class GameTemplate implements GameApp
 {
+	private boolean run; // 실행 흐름 컨트롤
+	
 	@Override
 	public void run()
 	{
@@ -26,15 +28,13 @@ public abstract class GameTemplate implements GameApp
 		} while (restart());
 	}
 	
-	private boolean run; // 실행 흐름 컨트롤
-	
 	private boolean restart()
 	{
 		boolean answer = InputHandler.readBoolean("다시 시작하시겠습니까 ? (Y/N) : ", "Y", "N");
 		return answer;
 	}
 	
-	protected void endGame() { run = false; }
+	protected void endGame() { run = false; }	// 게임 종료
 	
 	protected abstract void initialize();		// 초기화
 	protected abstract void render();			// 화면 출력

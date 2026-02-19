@@ -34,7 +34,7 @@ public final class InputHandler
 	public static String readString(String prompt)
 	{
 		try
-		{
+		{	
 			System.out.print(prompt);
 			return br.readLine().trim();
 		}
@@ -87,6 +87,7 @@ public final class InputHandler
 	}
 	
 	// 사용자에게 boolean 을 입력받는 메소드
+	// 대소문자를 구분하지 않는다.
 	public static boolean readBoolean(String prompt,String y,String n)
 	{
 		while(true)

@@ -3,6 +3,9 @@ package domain.minesweeper;
 import domain.base.GameApp;
 import util.MenuRender;
 
+/*
+ * 지뢰찾기 패키지에서 유일하게 외부와 소통이 가능한 클래스
+ */
 public class MinesweeperGetter
 {
 	private static MinesweeperOption option;

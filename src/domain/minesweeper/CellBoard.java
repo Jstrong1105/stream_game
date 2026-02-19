@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import util.InputHandler;
+
 /*
  * 지뢰찾기 보드판
  * stream 학습 용
@@ -27,6 +29,7 @@ class CellBoard
 		RD = new Random();
 		PRINTER = new BoardPrinter();
 	}
+	
 	
 	// 생성자
 	CellBoard(int size,int mineCount)
@@ -121,12 +124,10 @@ class CellBoard
 			.limit(SIZE*SIZE-MINE_COUNT)
 			.forEach(r->{board[r/SIZE][r%SIZE].setMine(false);});
 			
+			// 전체를 순회하면서 지뢰인 칸 주변 8칸의 인접 지뢰 수를 증가 시킨다.
 			IntStream.range(0, SIZE*SIZE)
 			.filter(c->board[c/SIZE][c%SIZE].isMine())
-			.forEach(c->
-			{
-				adjacentMine(c/SIZE, c%SIZE,true);
-			});
+			.forEach(c->adjacentMine(c/SIZE, c%SIZE,true));
 		}
 	}	
 	
@@ -141,6 +142,7 @@ class CellBoard
 				int nRow = row + DIRECTIONS_ROW[i];
 				int nCol = col + DIRECTIONS_COL[i];
 				
+				// 새롭게 계산한 주변 칸이 보드판의 범위 안에 있다면
 				if(!isOutOfArray(nRow,nCol))
 				{
 					if(add)
@@ -162,7 +164,8 @@ class CellBoard
 		PRINTER.printBoard(board);
 	}
 	
-	// 처음 입력한 좌표가 지뢰여서 해당 지뢰를 다른 곳으로 옮기는 메소드
+	// 처음 입력한 좌표가 지뢰인지 확인하고
+	// 지뢰라면 다른 곳으로 옮기는 메소드
 	void firstOpen(int row,int col)
 	{
 		if(board[row][col].isMine())
@@ -269,3 +272,4 @@ class CellBoard
 		.forEach(c->c.openMine());
 	}
 }
+

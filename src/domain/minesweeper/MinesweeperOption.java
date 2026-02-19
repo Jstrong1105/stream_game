@@ -1,5 +1,8 @@
 package domain.minesweeper;
 
+/*
+ * 지뢰찾기 옵션
+ */
 class MinesweeperOption
 {
 	private final int MAX_WEIGHT = 3;

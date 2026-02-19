@@ -25,25 +25,30 @@ class MinesweeperLauncher extends GameTemplate
 	
 	private Instant startTime;	// 시작 시간
 	
+	// 생성자
 	MinesweeperLauncher(MinesweeperOption option)
 	{
 		SIZE = option.getSize();
 		MINES_COUNT = SIZE*SIZE*option.getWeight()/10;
 	}
 	
-	
 	// 초기화
 	@Override
 	protected void initialize()
 	{
+		// 안내메시지 출력
 		ScreenCleaner.cleanScreen();
 		InputHandler.readString("지뢰찾기 게임입니다. 시작하려면 엔터를 눌러주세요.");
 		
+		// 속성 초기화
 		first = true;
 		playerRow = -1;
 		playerCol = -1;
+		
+		// 새로운 보드판 생성
 		board = new CellBoard(SIZE, MINES_COUNT);
 		
+		// 현재 시간 기록
 		startTime = Instant.now();
 	}
 
@@ -60,8 +65,8 @@ class MinesweeperLauncher extends GameTemplate
 	protected void handleInput()
 	{
 		System.out.println("폭탄의 개수 : " + MINES_COUNT);
-		playerRow = InputHandler.readInt("행 번호 : ",1,SIZE)-1;
-		playerCol = InputHandler.readInt("열 번호 : ",1,SIZE)-1;
+		playerRow = InputHandler.readInt("행 번호(R) : ",1,SIZE) -1;
+		playerCol = InputHandler.readInt("열 번호(C) : ",1,SIZE) -1;
 		open = InputHandler.readBoolean("1. 오픈 / 2. 깃발 : ", "1", "2");
 	}
 
@@ -77,28 +82,41 @@ class MinesweeperLauncher extends GameTemplate
 		// 오픈 하기
 		else
 		{
-			// 첫 입력이라면
-			if(first)
-			{
-				first = false;
-				board.firstOpen(playerRow, playerCol);
-			}
+			openCell();
+		}
+	}
+	
+	// 입력 처리
+	private void openCell()
+	{
+		// 첫 입력이라면
+		if(first)
+		{
+			first = false;
+			board.firstOpen(playerRow, playerCol);
+		}
+		 
+		// 고른 칸이 폭탄이라면
+		if(board.isMine(playerRow, playerCol))
+		{
+			finish(GameResult.lose());
+		}
+		
+		// 고른 칸이 폭탄이 아니라면
+		else
+		{
+			board.openCell(playerRow, playerCol);
 			
-			// 고른 칸이 폭탄이라면
-			if(board.isMine(playerRow, playerCol))
-			{
-				finish(GameResult.lose());
-			}
-			// 고른 칸이 폭탄이 아니라면
-			else
-			{
-				board.openCell(playerRow, playerCol);
-				
-				if(board.isClear())
-				{
-					finish(GameResult.win((int)Duration.between(startTime, Instant.now()).getSeconds()));
-				}
-			}
+			clearCheck();
+		}
+	}
+	
+	// 클리어 체크
+	private void clearCheck()
+	{
+		if(board.isClear())
+		{
+			finish(GameResult.win((int)Duration.between(startTime, Instant.now()).getSeconds()));
 		}
 	}
 	
@@ -108,7 +126,7 @@ class MinesweeperLauncher extends GameTemplate
 		System.out.println();
 		
 		board.openMine();
-		board.boardPrint();
+		render();
 		
 		if(result.isLose())
 		{

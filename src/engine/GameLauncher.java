@@ -14,6 +14,9 @@ public class GameLauncher
 	public static void main(String[] args)
 	{
 		// 프로그램 시작시 한번만 실행할 부분
+		
+		ScreenCleaner.cleanScreen();
+		
 		System.out.print("로딩 중입니다");
 		
 		for(int i = 0; i < 3; i++)

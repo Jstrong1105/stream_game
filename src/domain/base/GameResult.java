@@ -21,6 +21,7 @@ public class GameResult
 		this.clearTime = clearTime;
 	}
 	
+	// 결과만 받는 생성자
 	private GameResult(ResultType result)
 	{
 		this(result,Integer.MAX_VALUE);

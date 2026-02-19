@@ -5,6 +5,9 @@ import java.util.function.Consumer;
 import domain.base.OptionSettorTemplate;
 import util.InputHandler;
 
+/*
+ * 지뢰찾기 옵션 수정 메뉴
+ */
 enum MinesweeperOptionMenu implements OptionSettorTemplate<MinesweeperOption>
 {
 	SIZE("사이즈", "보드판의 가로, 세로 길이를 결정합니다.", (option) -> {
