@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import domain.base.GameApp;
 import domain.minesweeper.MinesweeperGetter;
+import domain.memorygame.MemoryGameGetter;
 
 /*
  * 게임을 만드는 장소
@@ -12,7 +13,8 @@ import domain.minesweeper.MinesweeperGetter;
  */
 public enum GameFactory
 {
-	MINESWEEPER("지뢰찾기","지뢰가 아닌 칸을 모두 여세요!",MinesweeperGetter::getLauncher,MinesweeperGetter::setOption)
+	MINESWEEPER("지뢰찾기","지뢰가 아닌 칸을 모두 여세요!",MinesweeperGetter::getLauncher,MinesweeperGetter::setOption),
+	MEMORY_GAME("메모리게임","동일한 카드를 뒤집으세요!",MemoryGameGetter::getLauncher,MemoryGameGetter::setOption)
 	;
 	
 	GameFactory(String name, String explain, Supplier<GameApp> maker, Runnable setter)

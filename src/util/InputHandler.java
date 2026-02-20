@@ -40,7 +40,7 @@ public final class InputHandler
 		}
 		catch (IOException e)
 		{
-			throw new RuntimeException("입출력 스트림 에러");
+			throw new RuntimeException("입출력 스트림 에러",e);
 		}
 	}
 	

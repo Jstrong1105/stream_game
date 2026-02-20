@@ -6,7 +6,7 @@ package domain.base;
 public class GameResult
 {
 	// enum 객체
-	public enum ResultType
+	private enum ResultType
 	{
 		WIN,LOSE,DRAW,FOLD; 
 	}

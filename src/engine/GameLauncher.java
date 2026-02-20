@@ -57,7 +57,7 @@ public class GameLauncher
 				if(choice == 1)
 				{
 					GameApp launcher = games[answer-1].getLauncher();
-					launcher.run();
+					launcher.gamestart();
 				}
 				else if(choice == 2)
 				{

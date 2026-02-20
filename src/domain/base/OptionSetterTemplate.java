@@ -1,6 +1,6 @@
 package domain.base;
 
-public interface OptionSettorTemplate<T>
+public interface OptionSetterTemplate<T>
 {
 	String getName();
 	String getExplain();

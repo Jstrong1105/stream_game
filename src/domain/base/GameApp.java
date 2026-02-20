@@ -5,5 +5,5 @@ package domain.base;
  */
 public interface GameApp
 {
-	void run();
+	void gamestart();
 }

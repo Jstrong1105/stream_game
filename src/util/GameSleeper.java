@@ -32,10 +32,8 @@ public final class GameSleeper
 	public static void gameStop(int second)
 	{
 		try
-		{	for(int i = second; i > 0; i--)
-			{
-			 	Thread.sleep(1000);
-			}
+		{	
+			 Thread.sleep(1000*second);
 		}
 		
 		catch (InterruptedException e)

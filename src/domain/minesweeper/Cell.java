@@ -6,7 +6,7 @@ package domain.minesweeper;
 class Cell
 {
 	private static final char HIDDEN_SHAPE = '■';
-	private static final char FLAG_SHAPE = 'Ρ';
+	private static final char FLAG_SHAPE = 'P';
 	private static final char MINE_SHAPE = '*';
 	private static final char[] OPEN_SHAPE = {'□','①','②','③','④','⑤','⑥','⑦','⑧'};
 	

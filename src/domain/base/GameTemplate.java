@@ -11,7 +11,7 @@ public abstract class GameTemplate implements GameApp
 	private boolean run; // 실행 흐름 컨트롤
 	
 	@Override
-	public void run()
+	public void gamestart()
 	{
 		do
 		{
@@ -28,10 +28,10 @@ public abstract class GameTemplate implements GameApp
 		} while (restart());
 	}
 	
-	private boolean restart()
+	// 만약 필요하다면 하위에서 오버라이딩해서 다시 시작하는 메소드를 따로 디자인 할 수 있음
+	protected boolean restart()
 	{
-		boolean answer = InputHandler.readBoolean("다시 시작하시겠습니까 ? (Y/N) : ", "Y", "N");
-		return answer;
+		return InputHandler.readBoolean("다시 시작하시겠습니까 ? (Y/N) : ", "Y", "N");
 	}
 	
 	protected void endGame() { run = false; }	// 게임 종료

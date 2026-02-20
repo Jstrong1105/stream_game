@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import util.InputHandler;
-
 /*
  * 지뢰찾기 보드판
  * stream 학습 용
@@ -16,8 +14,8 @@ class CellBoard
 	private static final int[] DIRECTIONS_ROW = {-1,-1,-1,0,0,1,1,1};
 	private static final int[] DIRECTIONS_COL = {-1,0,1,-1,1,-1,0,1};
 	
-	private final int SIZE;			// 보드판 가로 / 세로 사이즈
-	private final int MINE_COUNT;	// 지뢰의 개수
+	private final int size;			// 보드판 가로 / 세로 사이즈
+	private final int mineCount;	// 지뢰의 개수
 	
 	private final Cell[][] board;	// 보드판
 	
@@ -30,17 +28,16 @@ class CellBoard
 		PRINTER = new BoardPrinter();
 	}
 	
-	
 	// 생성자
 	CellBoard(int size,int mineCount)
 	{
-		SIZE = size;
-		MINE_COUNT = mineCount;
+		this.size = size;
+		this.mineCount = mineCount;
 		
 		// 보드판 생성 로직
 		// Stream 활용
-		board = IntStream.range(0, SIZE)
-				.mapToObj(r -> IntStream.range(0, SIZE)
+		board = IntStream.range(0, size)
+				.mapToObj(r -> IntStream.range(0, size)
 				.mapToObj(c-> new Cell())
 				.toArray(Cell[]::new))
 				.toArray(Cell[][]::new);
@@ -95,16 +92,16 @@ class CellBoard
 		// 위의 방식은 일정한 속도를 보장해 준다고 할 수 있지만 
 		// 아래 방식은 걸리는 속도를 일정하게 보장해 주진 않는다. 
 		// 다만 거의 무조건 위의 방식보다 빠르다.
-		if(SIZE*SIZE/2 >= MINE_COUNT)
+		if(size*size/2 >= mineCount)
 		{
 			RD
-			.ints(0,SIZE*SIZE)
+			.ints(0,size*size)
 			.distinct()
-			.limit(MINE_COUNT)
+			.limit(mineCount)
 			.forEach(r->
 			{
-				board[r/SIZE][r%SIZE].setMine(true);
-				adjacentMine(r/SIZE, r%SIZE, true);
+				board[r/size][r%size].setMine(true);
+				adjacentMine(r/size, r%size, true);
 			});
 		}
 		else
@@ -119,15 +116,15 @@ class CellBoard
 			 
 			// 그 다음에 SIZE*SIZE - mineCount 만큼 지뢰가 아닌 셀로 만들어야 한다.
 			RD
-			.ints(0,SIZE*SIZE)
+			.ints(0,size*size)
 			.distinct()
-			.limit(SIZE*SIZE-MINE_COUNT)
-			.forEach(r->{board[r/SIZE][r%SIZE].setMine(false);});
+			.limit(size*size-mineCount)
+			.forEach(r->{board[r/size][r%size].setMine(false);});
 			
 			// 전체를 순회하면서 지뢰인 칸 주변 8칸의 인접 지뢰 수를 증가 시킨다.
-			IntStream.range(0, SIZE*SIZE)
-			.filter(c->board[c/SIZE][c%SIZE].isMine())
-			.forEach(c->adjacentMine(c/SIZE, c%SIZE,true));
+			IntStream.range(0, size*size)
+			.filter(c->board[c/size][c%size].isMine())
+			.forEach(c->adjacentMine(c/size, c%size,true));
 		}
 	}	
 	
@@ -174,16 +171,16 @@ class CellBoard
 			// 해당 칸은 지뢰가 아닌 칸이여야 겠지?
 			// 이 후 사용자가 처음 입력한 칸 주변 8칸의 인접 지뢰 개수를 -1 시키고
 			// 새롭게 지뢰를 설정한 좌표 주변 8칸의 인접 지뢰 개수를 +1 해야한다.
-			RD.ints(0,SIZE*SIZE)
-			.filter(c->!board[c/SIZE][c%SIZE].isMine())
+			RD.ints(0,size*size)
+			.filter(c->!board[c/size][c%size].isMine())
 			.limit(1)
 			.forEach(c->
 			{
 				board[row][col].setMine(false);
 				adjacentMine(row, col, false);
 				
-				board[c/SIZE][c%SIZE].setMine(true);
-				adjacentMine(c/SIZE, c%SIZE, true);
+				board[c/size][c%size].setMine(true);
+				adjacentMine(c/size, c%size, true);
 			});
 		}
 		
@@ -193,7 +190,7 @@ class CellBoard
 	// 입력받은 좌표가 유효한 좌표인지 확인하는 메소드
 	boolean isOutOfArray(int row,int col)
 	{
-		return row < 0 || col < 0 || row >= SIZE || col >= SIZE;
+		return row < 0 || col < 0 || row >= size || col >= size;
 	}
 	
 	// 범위를 벗어나면 종료하는 래퍼 메소드
@@ -260,7 +257,9 @@ class CellBoard
 		return
 		Arrays.stream(board)
 		.flatMap(Arrays::stream)
-		.noneMatch(c->!c.isMine()&&!c.isOpen());
+		.allMatch(c->c.isMine()||c.isOpen());
+		// .noneMatch(c->!c.isMine()&&!c.isOpen());
+		// 지뢰가 아니고 열리지 않은 칸이 하나라도 있다면? false 인거지?
 	}
 	
 	// 지뢰가 아닌 칸을 모두 열었거나 지뢰를 오픈했다면 모든 지뢰를 오픈하는 메소드

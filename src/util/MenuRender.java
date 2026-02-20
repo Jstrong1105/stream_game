@@ -1,6 +1,6 @@
 package util;
 
-import domain.base.OptionSettorTemplate;
+import domain.base.OptionSetterTemplate;
 
 /*
  * 옵션 변경 메뉴 출력기
@@ -9,7 +9,7 @@ public final class MenuRender
 {
 	private MenuRender() {}
 	
-	public static <T , E extends Enum<E> & OptionSettorTemplate<T>> void menuRender(T option,E[] menu,String title)
+	public static <T , E extends Enum<E> & OptionSetterTemplate<T>> void menuRender(T option,E[] menu,String title)
 	{
 		while(true)
 		{
@@ -19,7 +19,7 @@ public final class MenuRender
 			
 			for(E e : menu)
 			{
-				System.out.println(e.ordinal()+1 + ". " + e.getName() + " : " + e.getExplain());
+				System.out.println( (e.ordinal()+1) + ". " + e.getName() + " : " + e.getExplain());
 			}
 			
 			int answer = InputHandler.readInt("번호를 선택 : ",0,menu.length);
