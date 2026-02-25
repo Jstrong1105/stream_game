@@ -24,16 +24,16 @@ public class GameResult
 	// 결과만 받는 생성자
 	private GameResult(ResultType result)
 	{
-		this(result,Integer.MAX_VALUE);
+		this(result,-1);
 	}
 	
 	// 외부에서 GameResult를 생성하기 위해서 만든 정적 메소드
 	// 기존 방식 -> GameResult result = new GameResult(GameResult.ResultType.WIN,100);
 	// 아래 방식 -> GameResult result = GameResult.win(100);
-	public static GameResult win(int clearTime) { return new GameResult(ResultType.WIN,clearTime); }
-	public static GameResult lose() {return new GameResult(ResultType.LOSE);};
-	public static GameResult draw() {return new GameResult(ResultType.DRAW);};
-	public static GameResult fold() {return new GameResult(ResultType.FOLD);};
+	public static GameResult win(int clearTime) { return new GameResult(ResultType.WIN,clearTime);}
+	public static GameResult lose() {return new GameResult(ResultType.LOSE);}
+	public static GameResult draw() {return new GameResult(ResultType.DRAW);}
+	public static GameResult fold() {return new GameResult(ResultType.FOLD);}
 	
 	// getter
 	public int getClearTime() { return clearTime; }

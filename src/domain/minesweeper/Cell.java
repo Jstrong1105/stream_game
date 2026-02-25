@@ -26,10 +26,10 @@ class Cell
 	private static final int MAX_ADJACENTMINES = 8;
 	
 	// 생성자
-	Cell()
+	Cell(boolean mine)
 	{
 		status = CellStatus.HIDDEN;
-		mine = false;
+		this.mine = mine;
 		adjacentMines = MIN_ADJACENTMINES;
 	}
 	

@@ -69,10 +69,9 @@ class MemoryBoard
 		.forEach(card->card.hiddenCard());
 	}
 	
-	
 	// 한장 오픈 하는 메소드
 	// 이미 열린 카드를 선택하면 false 를 반환한다.
-	void openCard(int index)
+	boolean openCard(int index)
 	{
 		if(index < 0 || index >= boardCard.size()) 
 		{
@@ -83,51 +82,50 @@ class MemoryBoard
 		
 		if(card.isOpen())
 		{
-			InputHandler.readString("이미 오픈된 카드입니다.");
+			return true;
 		}
 		else
 		{
 			card.openCard();
 			playerCard.add(card);
+			return false;
 		}
 	}
 	
 	// 페어 수 만큼 골랐는지 확인하는 메소드
-	boolean selectAll()
+	boolean completeSelection()
 	{
 		return playerCard.size() == pairSize;
 	}
 	
-	// 한장이라도 일치하지 않는 카드
-	void matchCard(int second) 
+	// 고른 카드가 전부 일치하는지 확인하는 메소드
+	boolean isSameCard() 
 	{
-		ScreenCleaner.cleanScreen();
-		printCard();
-		
 		for(int i = 0; i < playerCard.size()-1; i++)
 		{
 			if(!playerCard.get(i).equals(playerCard.get(i+1)))
 			{
-				System.out.println("다른 카드입니다.");
-				GameSleeper.gameSleep(second);
-				hiddenCard();
-				playerCard.clear();
-				return;
+				notSameCard();
+				return false;
 			}
 		}
 		
-		System.out.println("같은 카드입니다.");
-		GameSleeper.gameStop(1);
-		playerCard.clear();
+		return true;
 	}
 	
 	// 일치 하지 않는 카드가 포함되어 있어서 다시 뒤집는 메소드
-	private void hiddenCard()
+	private void notSameCard()
 	{
 		for(Card card : playerCard)
 		{
 			card.hiddenCard();
 		}
+	}
+	
+	// 플레이어가 고른 카드를 리셋하는 메소드
+	void resetChoice()
+	{
+		playerCard.clear();
 	}
 	
 	// 클리어 여부를 반환하는 메소드

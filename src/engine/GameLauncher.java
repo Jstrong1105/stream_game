@@ -29,10 +29,8 @@ public class GameLauncher
 		
 		GameFactory[] games = GameFactory.values();
 		
-		boolean run = true;
-		
 		// 반복적으로 실행할 메뉴 출력 부분
-		while(run)
+		while(true)
 		{
 			ScreenCleaner.cleanScreen();
 			System.out.println("===== 게임 런처 =====");
@@ -48,7 +46,7 @@ public class GameLauncher
 			
 			if(answer == 0)
 			{
-				run = false;
+				break;
 			}
 			else
 			{

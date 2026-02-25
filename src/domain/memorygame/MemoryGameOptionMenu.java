@@ -2,10 +2,10 @@ package domain.memorygame;
 
 import java.util.function.Consumer;
 
-import domain.base.OptionSetterTemplate;
+import domain.base.OptionSetter;
 import util.InputHandler;
 
-enum MemoryGameOptionMenu implements OptionSetterTemplate<MemoryGameOption>
+enum MemoryGameOptionMenu implements OptionSetter<MemoryGameOption>
 {
 	CARD_PAIR("카드 수","카드의 수를 결정합니다.",option->
 	{

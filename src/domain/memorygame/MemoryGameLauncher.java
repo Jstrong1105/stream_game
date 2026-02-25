@@ -37,17 +37,17 @@ class MemoryGameLauncher extends GameTemplate
 	protected void initialize()
 	{
 		ScreenCleaner.cleanScreen();
-		InputHandler.readString("메모리게임입니다.");
 		
 		board = new MemoryBoard(cardPair,pairSize);	// 보드판 생성
 		playerNumber = -1;
 		
-		InputHandler.readString("엔터를 누르면 카드가 보여집니다.");
-		board.openAll();
-		board.printCard();
-		GameSleeper.gameSleep(10 * timeWeight);
-		board.hiddenAll();
-		startTime = Instant.now();
+		InputHandler.readString("메모리게임입니다. 엔터를 누르면 카드가 보여집니다.");
+		
+		board.openAll();						// 전부 열고
+		board.printCard();						// 보여준 다음
+		GameSleeper.gameSleep(10 * timeWeight);	// 기다리고
+		board.hiddenAll();						// 다시 숨기고
+		startTime = Instant.now();				// 시작시간 기록
 	}
 
 	// 화면 출력
@@ -79,13 +79,18 @@ class MemoryGameLauncher extends GameTemplate
 		// 기권하지 않았다면
 		else
 		{
-			board.openCard(playerNumber);
+			// 이미 오픈한 카드라면
+			if(board.openCard(playerNumber))
+			{
+				InputHandler.readString("이미 오픈한 카드입니다.");
+				return;
+			}
 		}
 		
 		// 카드를 전부 골랐다면
-		if(board.selectAll())
+		if(board.completeSelection())
 		{
-			board.matchCard(3*timeWeight);
+			checkCard();
 		}
 		
 		// 전부 찾았다면
@@ -93,6 +98,27 @@ class MemoryGameLauncher extends GameTemplate
 		{
 			finish(GameResult.win((int)Duration.between(startTime, Instant.now()).getSeconds()));
 		}
+	}
+	
+	// 카드를 전부 골라서 판정하기
+	private void checkCard()
+	{
+		render();
+		
+		// 전부 일치한다면
+		if(board.isSameCard())
+		{
+			System.out.println("같은 카드입니다.");
+			GameSleeper.gameSleep(1);
+		}
+		// 한장이라도 일치하지 않는다면
+		else
+		{
+			System.out.println("다른 카드입니다.");
+			GameSleeper.gameSleep(3*timeWeight);
+		}
+		
+		board.resetChoice();
 	}
 	
 	// 게임 종료
@@ -113,11 +139,5 @@ class MemoryGameLauncher extends GameTemplate
 		}
 		
 		endGame();
-	}
-	
-	public static void main(String[] args)
-	{
-		MemoryGameLauncher game = new MemoryGameLauncher(new MemoryGameOption());
-		game.gamestart();
 	}
 }

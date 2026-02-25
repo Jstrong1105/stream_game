@@ -47,8 +47,6 @@ public final class InputHandler
 	// 사용자에게 숫자를 입력받는 메소드
 	public static int readInt(String prompt)
 	{
-		int limit = 10;
-		
 		while(true)
 		{
 			try
@@ -57,13 +55,7 @@ public final class InputHandler
 			}
 			catch (NumberFormatException e)
 			{
-				limit--;
 				System.out.println("숫자만 입력하세요.");
-				
-				if(limit <= 0)
-				{
-					throw new RuntimeException("숫자를 입력하지 않아 종료됩니다.");
-				}
 			}
 		}
 	}

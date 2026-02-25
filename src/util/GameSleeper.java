@@ -9,6 +9,7 @@ public final class GameSleeper
 	private GameSleeper() {}
 	
 	// 남은 시간을 표시하는 메소드
+	// 0초가 남아있을때 0.5초 더 기다린다.
 	public static void gameSleep(int second)
 	{
 		try
@@ -33,7 +34,7 @@ public final class GameSleeper
 	{
 		try
 		{	
-			 Thread.sleep(1000*second);
+			 Thread.sleep(1000L*second);
 		}
 		
 		catch (InterruptedException e)

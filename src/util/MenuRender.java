@@ -1,6 +1,6 @@
 package util;
 
-import domain.base.OptionSetterTemplate;
+import domain.base.OptionSetter;
 
 /*
  * 옵션 변경 메뉴 출력기
@@ -9,7 +9,7 @@ public final class MenuRender
 {
 	private MenuRender() {}
 	
-	public static <T , E extends Enum<E> & OptionSetterTemplate<T>> void menuRender(T option,E[] menu,String title)
+	public static <T , E extends Enum<E> & OptionSetter<T>> void menuRender(T option,E[] menu,String title)
 	{
 		while(true)
 		{

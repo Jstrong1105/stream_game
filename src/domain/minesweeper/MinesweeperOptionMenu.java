@@ -2,13 +2,13 @@ package domain.minesweeper;
 
 import java.util.function.Consumer;
 
-import domain.base.OptionSetterTemplate;
+import domain.base.OptionSetter;
 import util.InputHandler;
 
 /*
  * 지뢰찾기 옵션 수정 메뉴
  */
-enum MinesweeperOptionMenu implements OptionSetterTemplate<MinesweeperOption>
+enum MinesweeperOptionMenu implements OptionSetter<MinesweeperOption>
 {
 	SIZE("사이즈", "보드판의 가로, 세로 길이를 결정합니다.", (option) -> {
         int size = InputHandler.readInt("변경할 사이즈(" + option.getMinSize() + "~" + option.getMaxSize() + "): ", 

@@ -36,11 +36,11 @@ class CellBoard
 		
 		// 보드판 생성 로직
 		// Stream 활용
-		board = IntStream.range(0, size)
-				.mapToObj(r -> IntStream.range(0, size)
-				.mapToObj(c-> new Cell())
-				.toArray(Cell[]::new))
-				.toArray(Cell[][]::new);
+		// board = IntStream.range(0, size)
+		//		.mapToObj(r -> IntStream.range(0, size)
+		//		.mapToObj(c-> new Cell())
+		//		.toArray(Cell[]::new))
+		//		.toArray(Cell[][]::new);
 				
 		// 지뢰 배치 로직
 		// Stream 활용
@@ -80,52 +80,51 @@ class CellBoard
 		// 마지막 한개를 찾기 위해서 2% 확률을 뚫어야 하니까 50번 그 다음은 33번 그 다음은 25번... 
 		// 정확히 몇번 정도 일지 예상은 하기 어렵지만 99개라고 하면 500번 정도는? 하지 않을까 싶네
 		// 위의 방법으로 하면 99개를 적용하는데 100번 + 100개 셔플 + 배치
-		// 지금 내가 구현하는 지뢰찾기는 최소 10 * 10 에서 10 %를 폭탄으로 
-		//                               최대 20 * 20 에서 75 %를 폭탄으로 배치하는 방식이다.
-		// 애매한가?
-		// 최대로 보면 위의 방식이 더 나아보이는데
-		// 일반적으로 실행하면 아래가 나아보인다.
 		
-		// 만약 지뢰의 비율이 50%를 넘어간다면 전체를 지뢰로 바꾸고 지뢰가 아닌 칸을 설정하게 만드는 방식으로 
-		// 만들게 된다면 아래의 방식이 모든 상황에서 압도적으로 효율적이라고 할 수 있다.
-		// 위의 방식보다 모든 상황에서 더 빠르다고 할 수 있지만? 정말 운이 없다면 더 걸릴 수도 있긴하지?
-		// 위의 방식은 일정한 속도를 보장해 준다고 할 수 있지만 
-		// 아래 방식은 걸리는 속도를 일정하게 보장해 주진 않는다. 
-		// 다만 거의 무조건 위의 방식보다 빠르다.
-		if(size*size/2 >= mineCount)
+		// 지뢰 개수가 과반수 인지 체크해서 전부 지뢰로 바꾼 다음에 일반 셀로 바꾸기 
+		// 지뢰 개수가 과반수를 넘지 않는다면 지뢰 설치하기
+		
+		// 절반 이상이 지뢰라면
+		if(mineCount > size*size / 2)
 		{
-			RD
-			.ints(0,size*size)
-			.distinct()
-			.limit(mineCount)
-			.forEach(r->
-			{
-				board[r/size][r%size].setMine(true);
-				adjacentMine(r/size, r%size, true);
-			});
-		}
-		else
-		{
-			// 여기서는 전체를 지뢰로 바꾸는 로직이 필요하다.
-			// board를 2차원 스트림으로 바꾸기
-			// 2차원 스트림을 1차원 스트림으로 바꾸기 펼치는 느낌으로
-			// 1차원 스트림을 각각의 셀에 setMine(true) 실행하기
-			 Arrays.stream(board)
-			.flatMap(Arrays::stream)
-			.forEach(c->c.setMine(true));
-			 
-			// 그 다음에 SIZE*SIZE - mineCount 만큼 지뢰가 아닌 셀로 만들어야 한다.
+			// 전체를 지뢰로 채운다.
+			board = IntStream.range(0, size)
+					.mapToObj(r -> IntStream.range(0, size)
+					.mapToObj(c -> new Cell(true))
+					.toArray(Cell[]::new))
+					.toArray(Cell[][]::new);
+			
+			// 랜덤하게 size * size - mineCount 만큼 지뢰가 아닌 셀로 만든다.
 			RD
 			.ints(0,size*size)
 			.distinct()
 			.limit(size*size-mineCount)
-			.forEach(r->{board[r/size][r%size].setMine(false);});
-			
-			// 전체를 순회하면서 지뢰인 칸 주변 8칸의 인접 지뢰 수를 증가 시킨다.
-			IntStream.range(0, size*size)
-			.filter(c->board[c/size][c%size].isMine())
-			.forEach(c->adjacentMine(c/size, c%size,true));
+			.forEach(num->board[num/size][num%size].setMine(false));
 		}
+		
+		// 지뢰가 절반이하라면
+		else
+		{
+			// 전체를 일반 셀로 채운다.
+			board = IntStream.range(0, size)
+					.mapToObj(r -> IntStream.range(0, size)
+					.mapToObj(c -> new Cell(false))
+					.toArray(Cell[]::new))
+					.toArray(Cell[][]::new);
+			
+			// mineCount 만큼 지뢰로 만든다.
+			RD
+			.ints(0,size*size)
+			.distinct()
+			.limit(mineCount)
+			.forEach(num->board[num/size][num%size].setMine(true));
+		}
+		
+		// 전체를 순회하면서 지뢰인 셀 주변 8칸 처리
+		IntStream.range(0, size*size)
+		.filter(num->board[num/size][num%size].isMine())
+		.forEach(num->adjacentMine(num/size, num%size,true));
+		
 	}	
 	
 	// 지뢰 주변 셀의 adjacentMine의 개수를 증감시키는 메소드
@@ -188,7 +187,7 @@ class CellBoard
 	}
 	
 	// 입력받은 좌표가 유효한 좌표인지 확인하는 메소드
-	boolean isOutOfArray(int row,int col)
+	private boolean isOutOfArray(int row,int col)
 	{
 		return row < 0 || col < 0 || row >= size || col >= size;
 	}
